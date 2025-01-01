@@ -34,7 +34,8 @@ export function ChurnPredictionForm() {
     RecentActivity: 0,
   });
 
-  const [prediction, setPrediction] = useState<number | null>(null);
+  const [prediction, setPrediction] = useState<string | null>(null);
+  const [possibleReasons, setPossibleReasons] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -72,8 +73,25 @@ export function ChurnPredictionForm() {
       if (!response.ok) throw new Error('Prediction failed');
       
       const data = await response.json();
-      setPrediction(data.prediction);
-    } catch (err) {
+      if (data.prediction === 1) {
+        let reasons = [];
+        if (formData.Tenure < 12) {
+          reasons.push("Short tenure indicates less loyalty or satisfaction.");
+        }
+        if (formData.SupportCalls > 5) {
+          reasons.push("High number of support calls may indicate unresolved issues.");
+        }
+        if (formData.BillingDelay > 0) {
+          reasons.push("Billing delays suggest dissatisfaction with billing services.");
+        }
+  
+        setPrediction("The customer is likely to churn");
+        setPossibleReasons(reasons.join(" "));
+      } else {
+        setPrediction("The customer is likely to stay");
+        setPossibleReasons("The customer shows satisfactory engagement and service usage.");
+      }
+     } catch (err) {
       setError("An error occurred while making the prediction. Please try again.");
     } finally {
       setLoading(false);
@@ -230,10 +248,12 @@ export function ChurnPredictionForm() {
         </div>
 
         {prediction !== null && (
-          <Alert className="mt-4 bg-green-500/10 text-green-500 border-green-500/20">
+          <Alert className={`mt-4 ${prediction=="The customer is likely to stay"? "bg-green-500/10 text-green-500 border-green-500/20": "bg-red-500/10 text-red-500 border-red-500/20"}`}>
             <CheckCircle2 className="h-4 w-4" />
             <AlertDescription>
-              Prediction Result: {prediction}
+             <b>Prediction Result: {prediction}</b> 
+              <br />
+             {possibleReasons}
             </AlertDescription>
           </Alert>
         )}
