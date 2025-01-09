@@ -20,7 +20,7 @@ Churn hurts. Losing customers can mean lost revenue, extra marketing costs, and 
 
 ## 🌐 Live Demo  
 🎉 Try it out here: [Live Model Link]([https://your-render-link.com](https://blinkit-churn-predictor.vercel.app/))  
-
+([https://blinkit-churn-predictor.vercel.app/])
 **Note**: The model is hosted on Render's free tier, so it might take a few seconds to wake up. Thanks for your patience!  
 
 ---
